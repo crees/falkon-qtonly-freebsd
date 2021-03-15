@@ -1,0 +1,13 @@
+task:
+    freebsd_instance:
+      matrix:
+        - image: freebsd-12-2-release-amd64
+
+    build_script:
+      - ASSUME_ALWAYS_YES=yes pkg bootstrap -f
+    install_script: 
+      - make missing | xargs pkg install -Ay || true
+      - make BATCH=yes FLAVOR=qtonly package
+      - mv work/pkg/* "falkon-qtonly-$(uname -r | sed 's,-.*,,')$(uname -m).txz"
+    binaries_artifacts:
+        path: falkon-qtonly-*.txz
